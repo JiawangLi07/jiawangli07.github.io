@@ -1,300 +1,215 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>李佳旺打分器</title>
-    
-    <link rel="icon" href="cute_wang.jpg" type="image/png">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Personal academic portfolio featuring AI projects, research interests, experience, and education."
+    />
+    <meta name="theme-color" content="#f6f4ef" />
+    <title>Jiawang Li — AI, Robotics & Machine Learning</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-    <style>
-        /* --- 2. 加载动画样式 --- */
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #f4f4f4;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
-        }
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="Back to top">
+        <span class="wordmark-dot"></span>
+        <span data-profile="shortName">Jiawang Li</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#about">About</a>
+        <a href="#work">Work</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="theme-toggle" type="button" aria-label="Toggle color theme">
+        <span aria-hidden="true">◐</span>
+      </button>
+    </header>
 
-        .eating-animation {
-            width: 120px;
-            height: auto;
-            animation: swallow 1.2s ease-in-out infinite;
-        }
-
-        @keyframes swallow {
-            0%, 100% { transform: scale(1) translateY(0); }
-            50% { transform: scale(1.15) translateY(-5px); }
-        }
-
-        .loading-text {
-            margin-top: 20px;
-            color: #666;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        /* --- 3. 你原本的打分器样式 --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            padding: 20px;
-        }
-        
-        .container {
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            padding: 40px;
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-        
-        .container:hover {
-            transform: translateY(-5px);
-        }
-        
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-        
-        .description {
-            color: #666;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-        
-        .input-group {
-            margin-bottom: 25px;
-        }
-        
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 18px;
-            text-align: center;
-            transition: border-color 0.3s;
-        }
-        
-        input:focus {
-            outline: none;
-            border-color: #6a11cb;
-            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2);
-        }
-        
-        .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        
-        button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        #check-btn {
-            background-color: #6a11cb;
-            color: white;
-        }
-        
-        #check-btn:hover {
-            background-color: #550db0;
-            transform: translateY(-2px);
-        }
-        
-        #reset-btn {
-            background-color: #f1f1f1;
-            color: #333;
-        }
-        
-        #reset-btn:hover {
-            background-color: #e1e1e1;
-            transform: translateY(-2px);
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .modal-content {
-            background-color: white;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.4s ease;
-            position: relative;
-        }
-        
-        .modal h2 {
-            color: #e74c3c;
-            margin-bottom: 20px;
-            font-size: 28px;
-        }
-        
-        .modal p {
-            margin-bottom: 25px;
-            font-size: 18px;
-            color: #333;
-        }
-        
-        #close-btn {
-            background-color: #6a11cb;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { 
-            from { opacity: 0; transform: translateY(50px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
-        @media (max-width: 600px) {
-            .container { padding: 30px 20px; }
-            h1 { font-size: 24px; }
-            .button-group { flex-direction: column; }
-            button { width: 100%; }
-        }
-    </style>
-</head>
-<body>
-
-    <div id="loader">
-        <img src="cute_wang.jpg" alt="Loading" class="eating-animation">
-        <div class="loading-text">正在连接李佳旺评分系统...</div>
-    </div>
-
-    <div class="container">
-        <h1>李佳旺打分器</h1>
-        <p class="description">请给李佳旺打分</p>
-        
-        <div class="input-group">
-            <input type="number" id="number-input" placeholder="请输入一个数字...">
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="profile-card">
+          <div class="avatar">
+            <img src="https://github.com/JiawangLi07.png" alt="Jiawang Li" />
+          </div>
+          <h1 data-profile="name">Jiawang Li</h1>
+          <p class="profile-role" data-profile="role">AI · Robotics · Machine Learning</p>
+          <p class="profile-location" data-profile="location">Building systems that connect people, robots, and learning</p>
+          <div class="social-links" aria-label="Social links">
+            <a data-link="github" href="https://github.com/JiawangLi07" target="_blank" rel="noreferrer">GitHub</a>
+            <a href="https://github.com/JiawangLi07?tab=repositories" target="_blank" rel="noreferrer">Repositories</a>
+          </div>
         </div>
-        
-        <div class="button-group">
-            <button id="check-btn">检测数字</button>
-            <button id="reset-btn">重置</button>
-        </div>
-    </div>
-    
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <h2>⚠️ 你说得对但是</h2>
-            <p id="modal-message">我是你爹</p>
-            <button id="close-btn">滚</button>
-        </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // --- A. 加载完成后自动移除动画的逻辑 ---
-            window.addEventListener('load', function() {
-                const loader = document.getElementById('loader');
-                setTimeout(() => {
-                    loader.style.opacity = '0';
-                    setTimeout(() => { loader.style.display = 'none'; }, 500);
-                }, 1000); // 1秒后消失
-            });
+        <div class="hero-copy" id="about">
+          <p class="eyebrow">Hello, I’m</p>
+          <h2 data-profile="headline">Building embodied AI systems for real-world interaction.</h2>
+          <p class="intro" data-profile="intro">
+            I work on hands-on projects across dexterous robot teleoperation, Transformer-based machine translation,
+            and game AI. I enjoy turning research ideas into working systems and I’m currently open to AI/ML and
+            robotics internship opportunities.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#work">Explore my work</a>
+            <a class="button button-secondary" href="#experience">About my work</a>
+          </div>
+          <dl class="quick-facts">
+            <div>
+              <dt>Focus</dt>
+              <dd data-profile="focus">Embodied AI · Robotics</dd>
+            </div>
+            <div>
+              <dt>Seeking</dt>
+              <dd data-profile="seeking">AI/ML · Robotics Internship</dd>
+            </div>
+            <div>
+              <dt>Available</dt>
+              <dd data-profile="availability">Open to opportunities</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
 
-            // --- B. 你原本的打分逻辑 ---
-            const input = document.getElementById('number-input');
-            const checkBtn = document.getElementById('check-btn');
-            const resetBtn = document.getElementById('reset-btn');
-            const modal = document.getElementById('modal');
-            const closeBtn = document.getElementById('close-btn');
-            const modalMessage = document.getElementById('modal-message');
-            
-            checkBtn.addEventListener('click', function() {
-                const value = input.value.trim();
-                if (value === '') {
-                    modalMessage.textContent = '请输入一个数字';
-                    modal.style.display = 'flex';
-                    return;
-                }
-                const number = parseFloat(value);
-                if (isNaN(number)) {
-                    modalMessage.textContent = '请输入有效的数字';
-                    modal.style.display = 'flex';
-                    return;
-                }
-                if (number >= 10) {
-                    modalMessage.textContent = '你是我爹';
-                    modal.style.display = 'flex';
-                } else {
-                    modalMessage.textContent = `我是你爹`;
-                    modal.style.display = 'flex';
-                }
-            });
-            
-            resetBtn.addEventListener('click', function() {
-                input.value = '';
-                input.focus();
-            });
-            
-            closeBtn.addEventListener('click', function() {
-                modal.style.display = 'none';
-            });
-            
-            window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    modal.style.display = 'none';
-                }
-            });
-            
-            input.addEventListener('keyup', function(event) {
-                if (event.key === 'Enter') {
-                    checkBtn.click();
-                }
-            });
-        });
-    </script>
-</body>
+      <section class="section" id="work">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Selected work</p>
+            <h2>Projects with evidence, not just claims.</h2>
+          </div>
+          <p>Each case study can explain the problem, your contribution, the technical choices, and the result.</p>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card project-featured">
+            <div class="project-visual visual-one" aria-hidden="true">
+              <span>01</span>
+              <div class="visual-orbit"></div>
+            </div>
+            <div class="project-content">
+              <p class="project-type">Featured · Embodied AI</p>
+              <h3>DexVerse — MANUS + Vive Teleoperation</h3>
+              <p>
+                Extended DexVerse with a desktop teleoperation path that combines MANUS glove joint data and Vive
+                wrist tracking—supporting calibration, bimanual control, and demonstration collection without an
+                OpenXR headset.
+              </p>
+              <ul class="tags" aria-label="Technologies">
+                <li>Python</li>
+                <li>Isaac Lab</li>
+                <li>Teleoperation</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://github.com/JiawangLi07/manus-vive-dexverse" target="_blank" rel="noreferrer">Case study ↗</a>
+                <a href="https://github.com/JiawangLi07/manus-vive-dexverse" target="_blank" rel="noreferrer">Source ↗</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-visual visual-two" aria-hidden="true">
+              <span>02</span>
+              <div class="visual-bars"><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="project-content">
+              <p class="project-type">Deep learning · NLP</p>
+              <h3>Transformer NMT from Scratch</h3>
+              <p>Implemented the core Transformer architecture for Chinese–English and German–English neural machine translation, with an NPU-ready training workflow.</p>
+              <ul class="tags">
+                <li>PyTorch</li>
+                <li>Transformer</li>
+                <li>NPU</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://github.com/JiawangLi07/Transformer-handout" target="_blank" rel="noreferrer">View source ↗</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-visual visual-three" aria-hidden="true">
+              <span>03</span>
+              <div class="visual-grid"></div>
+            </div>
+            <div class="project-content">
+              <p class="project-type">Algorithms · Game AI</p>
+              <h3>Botzone MCTS Agents</h3>
+              <p>Explored multiple Monte Carlo Tree Search variants, including weighted and improved agents, for competitive game-playing environments.</p>
+              <ul class="tags">
+                <li>C++</li>
+                <li>MCTS</li>
+                <li>Game AI</li>
+              </ul>
+              <div class="project-links">
+                <a href="https://github.com/JiawangLi07/botzone" target="_blank" rel="noreferrer">View source ↗</a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section split-section" id="experience">
+        <div>
+          <p class="eyebrow">Technical focus</p>
+          <h2>What I’m exploring.</h2>
+        </div>
+        <div class="timeline">
+          <article>
+            <div class="timeline-meta">Robotics</div>
+            <div>
+              <h3>Embodied AI & Teleoperation</h3>
+              <p class="muted">Human input · simulation · data collection</p>
+              <p>Adapting real tracking hardware to dexterous simulation workflows, with attention to calibration, coordinate systems, and reliable demonstration recording.</p>
+            </div>
+          </article>
+          <article>
+            <div class="timeline-meta">Learning</div>
+            <div>
+              <h3>Deep Learning Systems</h3>
+              <p class="muted">Architectures · training · hardware</p>
+              <p>Implementing learning architectures from first principles and building reproducible training pipelines across GPU- and NPU-oriented environments.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section interests-section">
+        <div>
+          <p class="eyebrow">Research interests</p>
+          <h2>Questions I care about.</h2>
+        </div>
+        <div class="interest-list">
+          <span>Embodied AI</span>
+          <span>Dexterous Manipulation</span>
+          <span>Human–Robot Interaction</span>
+          <span>Deep Learning</span>
+          <span>Game AI</span>
+          <span>Machine Learning Systems</span>
+        </div>
+      </section>
+
+      <section class="contact-section" id="contact">
+        <p class="eyebrow">Let’s work together</p>
+        <h2>Interested in embodied AI, robotics, or learning systems?</h2>
+        <p>I’d be glad to share more about my projects, experiments, and how I approach technical problems.</p>
+        <a class="button button-light" href="https://github.com/JiawangLi07" target="_blank" rel="noreferrer">View my GitHub</a>
+      </section>
+    </main>
+
+    <footer>
+      <p>© <span id="year"></span> <span data-profile="shortName">Jiawang Li</span></p>
+      <p>Designed for clarity, built for the web.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
 </html>
