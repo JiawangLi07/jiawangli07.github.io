@@ -2,14 +2,14 @@
 
 A dependency-free personal homepage for Jiawang Li, designed for AI/ML and robotics internship applications and GitHub Pages.
 
-## Personalize
+## Content
 
-Edit `index.html` and replace the placeholder profile, project, experience, education, and contact content. Add a PDF résumé to the repository and point the résumé button to it.
+The site highlights work in embodied AI, dexterous teleoperation, Transformer-based machine translation, and game AI. It is intentionally dependency-free and responsive, with light and dark themes.
 
 ## Preview locally
 
 Open `index.html` directly or serve the directory with any static HTTP server.
 
-## Publish
+## Next improvements
 
-Push these files to a public repository named `<github-username>.github.io`. GitHub Pages will publish the repository root at `https://<github-username>.github.io/`.
+Add a PDF résumé, contact email, education, and internship experience when those details are ready.
